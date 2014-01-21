@@ -555,6 +555,13 @@ class role::math {
     }
 }
 
+# == Class: role::mathsearch
+#
+# The MathSearch extension makes mathematical formulae searchable at mediawiki.
+class role::mathsearch {
+    include ::mathsearch
+}
+
 # == Class: role::chromium
 #
 # Chromium is the open source web browser project from which Google
