@@ -16,11 +16,11 @@ class mathsearch(
 ) {
     include role::math
     include role::geshi
+    include role::cirrussearch
 
     exec { "switch to dev branch of math":
         command     => "git checkout -b dev origin/dev",
         onlyif      => "git status | grep -c 'master'",
-        creates     => "${directory}/.git",
         cwd         => "/vagrant/mediawiki/extensions/Math",
         require     => [ Package['git'], Mediawiki::Extension['Math'] ],
         environment => 'HOME=/home/vagrant',
@@ -38,4 +38,12 @@ class mathsearch(
         needs_update => true,
         settings => template('mathsearch/MathSearch.php.erb'),
     }
+
+    exec { "build CirrusSearch search index":
+        command     => "php ./maintenance/updateSearchIndexConfig.php && touch .indexed",
+        creates     => "/vagrant/mediawiki/extensions/CirrusSearch/.indexed",
+        cwd         => "/vagrant/mediawiki/extensions/CirrusSearch",
+        require     =>  Mediawiki::Extension['CirrusSearch'],
+    }
+
 }
