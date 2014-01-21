@@ -18,6 +18,13 @@ class mathsearch(
     include role::geshi
     include role::cirrussearch
 
+    exec { "import test data":
+        command     => "/usr/bin/php importDump.php /vagrant/puppet/modules/mathsearch/files/sample.xml.bz2  && touch /home/vagrant/.sample-created",
+        creates     => "/home/vagrant/.sample-created",
+        cwd         => "/vagrant/mediawiki/maintenance/",
+        require     =>  Class['::mediawiki'],
+    }
+
     exec { "switch to dev branch of math":
         command     => "git checkout -b dev origin/dev",
         onlyif      => "git status | grep -c 'master'",
