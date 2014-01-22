@@ -53,4 +53,18 @@ class mathsearch(
         require     =>  Mediawiki::Extension['CirrusSearch'],
     }
 
+    exec { 'install ReRenderMath':
+        cwd     => "/vagrant/mediawiki/extensions/MathSearch/maintenance/",
+        command => "/usr/bin/php UpdateMath.php && /usr/bin/php CreateMathIndex.php /vagrant/mediawiki/extensions/MathSearch/mws/data/wiki --mwsns=mws: ",
+        creates => '/vagrant/mediawiki/extensions/MathSearch/mws/data/wiki/math000000000000.xml',  
+    }
+
+    exec { 'install mwsd':
+        cwd     => "/vagrant/mediawiki/extensions/MathSearch/mws",
+        command => '/bin/bash install.sh',
+        creates => '/etc/init.d/restd_wiki',
+        user    => 'root',
+        require  => Mediawiki::Extension['MathSearch'],       
+    }
+
 }
